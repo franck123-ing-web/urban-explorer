@@ -290,14 +290,15 @@ smartphone avec Expo Go
 
 ### Rizlène BERRAG
 
-Interface utilisateur
+Initialisation et Navigation
 
-Gestion de la liste des lieux
+La Caméra (expo-camera ou expo-image-picker)
 
 ### Amine KAOUTAR
 
-Navigation et structure générale de l’application
+Communication API et Interface
 
+barre de recherche
 
 ### Franck JOEL
 
