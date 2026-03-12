@@ -262,7 +262,7 @@ amélioration de l’ergonomie de l’application
 ## 8. Installation et Lancement du Projet
 Cloner le projet
 
-git clone URL_DU_REPOSITORY
+git clone https://github.com/RizleneBERRAG/urban-explorer.git
 
 Installer les dépendances
 
