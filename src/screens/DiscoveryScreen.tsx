@@ -7,89 +7,114 @@ import { Lieu, APIRecord, ApiResponse, CoordonneesGeo } from "../types/lieu";
 const DiscoveryScreen: React.FC = () => {
   const [lieux, setLieux] = useState<Lieu[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
+  const [page, setPage] = useState<number>(0);
+  const [hasMoreData, setHasMoreData] = useState<boolean>(true);
+  const LIMIT = 50;
+  const [totalAvailable, setTotalAvailable] = useState<number>(0);
 
-  useEffect(() => {
-    const fetchLieux = async () => {
-      try {
-        console.log("Fetching data from API...");
-        const params = new URLSearchParams({
-          dataset: "que-faire-a-paris-",
-          "disjunctive.access_type": "true",
-          "disjunctive.price_type": "true",
-          "disjunctive.deaf": "true",
-          "disjunctive.blind": "true",
-          "disjunctive.pmr": "true",
-          "disjunctive.address_city": "true",
-          "disjunctive.address_zipcode": "true",
-          "disjunctive.address_name": "true",
-          "disjunctive.programs": "true",
-          limit: "100",
-        });
-
-        const url = `https://opendata.paris.fr/api/records/1.0/search/?${params.toString()}`;
-        console.log("Fetching URL:", url);
-        
-        const response = await fetch(url);
-        
-        console.log("Response status:", response.status);
-        const data = await response.json();
-        console.log("=== API RESPONSE DEBUG ===");
-        console.log("Total hits (nhits):", data.nhits);
-        console.log("Records count:", data.records?.length);
-        
-        if (data.records && Array.isArray(data.records)) {
-          // Transform API response to simplified Lieu format
-          const lieuxTransformes: Lieu[] = data.records.map((record: APIRecord) => {
-            let coords: CoordonneesGeo | null = null;
-            
-            // Try to get coordinates from multiple sources
-            if (record.fields.coordonnees_geo) {
-              coords = record.fields.coordonnees_geo;
-            } else if (record.geometry?.coordinates) {
-              coords = {
-                lat: record.geometry.coordinates[1],
-                lon: record.geometry.coordinates[0]
-              };
-            }
-            
-            // Get image URL - try multiple fields
-            let imageUrl: string | undefined = undefined;
-            if (record.fields.main_image) {
-              imageUrl = record.fields.main_image;
-            } else if (record.fields.image) {
-              imageUrl = record.fields.image;
-            } else if (record.fields.images && record.fields.images.length > 0) {
-              imageUrl = record.fields.images[0];
-            }
-            
-            return {
-              id: record.recordid,
-              nom_usuel: record.fields.title || record.fields.nom_usuel || 'Sans titre',
-              adresse: record.fields.address_name || record.fields.adresse || '',
-              coordonnees_geo: coords,
-              image: imageUrl,
+  const fetchLieux = async (pageNum: number) => {
+    try {
+      console.log(`Fetching page ${pageNum} with limit ${LIMIT}...`);
+      
+      // Simple pagination - just limit and start
+      const url = `https://opendata.paris.fr/api/records/1.0/search/?dataset=que-faire-a-paris-&rows=${LIMIT}&start=${pageNum * LIMIT}`;
+      console.log("API URL:", url);
+      
+      const response = await fetch(url);
+      
+      console.log("Response status:", response.status);
+      const data = await response.json();
+      console.log("=== API RESPONSE DEBUG ===");
+      console.log("Total hits (nhits):", data.nhits);
+      console.log("Records count:", data.records?.length);
+      console.log("Current page:", pageNum);
+      console.log("Expected start:", pageNum * LIMIT);
+      
+      // Store total available records
+      if (data.nhits) {
+        setTotalAvailable(data.nhits);
+        console.log("Total available from API:", data.nhits);
+      }
+      
+      // Debug: log the actual URL being called
+      console.log("API URL:", url);
+      
+      if (data.records && Array.isArray(data.records)) {
+        // Transform API response to simplified Lieu format
+        const lieuxTransformes: Lieu[] = data.records.map((record: APIRecord) => {
+          let coords: CoordonneesGeo | null = null;
+          
+          // Try to get coordinates from multiple sources
+          if (record.fields.coordonnees_geo) {
+            coords = record.fields.coordonnees_geo;
+          } else if (record.geometry?.coordinates) {
+            coords = {
+              lat: record.geometry.coordinates[1],
+              lon: record.geometry.coordinates[0]
             };
-          });
-          console.log("Transformed lieux count:", lieuxTransformes.length);
-          if (lieuxTransformes.length > 0) {
-            console.log("First lieu:", lieuxTransformes[0]);
           }
+          
+          // Get image URL - try multiple fields with cover_url as priority
+          let imageUrl: string = "https://picsum.photos/200/200"; // default fallback
+          if (record.fields.cover_url) {
+            imageUrl = record.fields.cover_url;
+          } else if (record.fields.main_image) {
+            imageUrl = record.fields.main_image;
+          } else if (record.fields.image) {
+            imageUrl = record.fields.image;
+          } else if (record.fields.images && record.fields.images.length > 0) {
+            imageUrl = record.fields.images[0];
+          }
+          
+          return {
+            id: record.recordid,
+            nom_usuel: record.fields.title || record.fields.nom_usuel || 'Sans titre',
+            adresse: record.fields.address_name || record.fields.adresse || '',
+            coordonnees_geo: coords,
+            image: imageUrl,
+          };
+        });
+        console.log("Transformed lieux count:", lieuxTransformes.length);
+        if (lieuxTransformes.length > 0) {
+          console.log("First lieu:", lieuxTransformes[0]);
+        }
+        
+        // Append new data or set initial data
+        if (pageNum === 0) {
           setLieux(lieuxTransformes);
         } else {
-          console.error("No records found in API response");
-          setLieux([]);
+          setLieux(prev => [...prev, ...lieuxTransformes]);
         }
-        console.log("=========================");
-      } catch (error) {
-        console.error("Erreur API:", error);
-        setLieux([]);
-      } finally {
-        setLoading(false);
+        
+        // Check if there's more data - compare loaded count with total
+        const totalLoaded = pageNum === 0 ? lieuxTransformes.length : lieux.length + lieuxTransformes.length;
+        const hasMore = totalLoaded < totalAvailable && lieuxTransformes.length === LIMIT;
+        setHasMoreData(hasMore);
+        console.log(`Loaded: ${totalLoaded}, Total: ${totalAvailable}, Has more: ${hasMore}`);
+      } else {
+        console.error("No records found in API response");
+        setHasMoreData(false);
       }
-    };
+      console.log("=========================");
+    } catch (error) {
+      console.error("Erreur API:", error);
+      setHasMoreData(false);
+    } finally {
+      setLoading(false);
+    }
+  };
 
-    fetchLieux();
+  useEffect(() => {
+    fetchLieux(0);
   }, []);
+
+  const loadMoreData = () => {
+    if (!loading && hasMoreData) {
+      const nextPage = page + 1;
+      setPage(nextPage);
+      fetchLieux(nextPage);
+    }
+  };
 
   // Debug: log current state
   console.log("Current lieux count:", lieux.length);
@@ -127,23 +152,57 @@ const DiscoveryScreen: React.FC = () => {
             image={item.image}
           />
         )}
+        ListHeaderComponent={
+          <View style={{ padding: 20, backgroundColor: '#fff', marginBottom: 8 }}>
+            <Text style={{ fontSize: 32, fontWeight: 'bold', color: '#1a1a1a' }}>
+              Découvrir Paris
+            </Text>
+            <Text style={{ fontSize: 14, color: '#666', marginTop: 4 }}>
+              {lieux.length} / {totalAvailable} lieux à explorer
+            </Text>
+          </View>
+        }
+        ListFooterComponent={
+          loading || !hasMoreData ? (
+            <View style={{ padding: 20, alignItems: 'center' }}>
+              {loading && <ActivityIndicator size="small" color="#007AFF" />}
+              {!hasMoreData && lieux.length > 0 && (
+                <Text style={{ color: '#666', marginTop: 10 }}>Aucun autre lieu disponible</Text>
+              )}
+            </View>
+          ) : null
+        }
+        onEndReached={loadMoreData}
+        onEndReachedThreshold={0.5}
+        contentContainerStyle={{ paddingBottom: 20 }}
+        showsVerticalScrollIndicator={false}
       />
     </View>
   );
 };
 
 const styles = StyleSheet.create({
-  container: { flex: 1 },
-  loading: { flex: 1, justifyContent: "center", alignItems: "center" },
+  container: { 
+    flex: 1,
+    backgroundColor: "#f5f5f5",
+  },
+  loading: { 
+    flex: 1, 
+    justifyContent: "center", 
+    alignItems: "center",
+    backgroundColor: "#f5f5f5",
+  },
   empty: {
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
     padding: 20,
+    backgroundColor: "#f5f5f5",
   },
   subtext: {
     color: "#666",
     marginTop: 10,
+    fontSize: 14,
   },
 });
 

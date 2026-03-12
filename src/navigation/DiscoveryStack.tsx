@@ -12,7 +12,7 @@ export default function DiscoveryStack() {
       <Stack.Screen
         name="ListeLieux"
         component={DiscoveryScreen}
-        options={{ title: 'Découverte' }}
+        options={{ headerShown: false }}
       />
       <Stack.Screen
         name="DetailLieu"

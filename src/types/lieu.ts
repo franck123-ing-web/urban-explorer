@@ -11,6 +11,7 @@ export interface LieuFields {
   address_name?: string;
   address_city?: string;
   address_zipcode?: string;
+  address_street?: string;
   coordonnees_geo?: { lat: number; lon: number } | null;
   access_type?: string;
   price_type?: string;
@@ -18,6 +19,7 @@ export interface LieuFields {
   blind?: boolean;
   pmr?: boolean;
   programs?: string[];
+  cover_url?: string;
   image?: string;
   images?: string[];
   main_image?: string;
