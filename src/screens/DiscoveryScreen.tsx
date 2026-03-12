@@ -95,10 +95,10 @@ const DiscoveryScreen: React.FC = () => {
         }
         
         // Check if there's more data - compare loaded count with total
-        const totalLoaded = pageNum === 0 ? lieuxTransformes.length : lieux.length + lieuxTransformes.length;
+        const totalLoaded = pageNum === 0 ? lieuxTransformes.length : allLieuxLoaded.length + lieuxTransformes.length;
         const hasMore = totalLoaded < totalAvailable && lieuxTransformes.length === LIMIT;
         setHasMoreData(hasMore);
-        console.log(`Loaded: ${totalLoaded}, Total: ${totalAvailable}, Has more: ${hasMore}`);
+        console.log(`Page ${pageNum}: Loaded ${lieuxTransformes.length}, Total loaded: ${totalLoaded}, Total available: ${totalAvailable}, Has more: ${hasMore}`);
       } else {
         console.error("No records found in API response");
         setHasMoreData(false);
