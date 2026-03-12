@@ -81,6 +81,7 @@ const styles = StyleSheet.create({
   map: {
     flex: 1,
   },
+<<<<<<< HEAD
   webMessage: {
     fontSize: 20,
     fontWeight: "bold",
@@ -96,3 +97,6 @@ const styles = StyleSheet.create({
     color: "#666",
   },
 })
+=======
+}); 
+>>>>>>> 8b1612a (Travail en cours avant pull)
