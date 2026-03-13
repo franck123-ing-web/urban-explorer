@@ -1,6 +1,6 @@
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
-import React, { useEffect, useRef, useState, useContext } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 
 import {
   ActivityIndicator,
@@ -14,8 +14,8 @@ import {
 } from "react-native";
 
 import LieuCard from "../components/LieuCard";
-import { APIRecord, CoordonneesGeo, Lieu } from "../types/lieu";
 import { ThemeContext } from "../contexts/ThemeContext";
+import { APIRecord, CoordonneesGeo, Lieu } from "../types/lieu";
 
 const DiscoveryScreen: React.FC = () => {
 
@@ -167,6 +167,12 @@ const DiscoveryScreen: React.FC = () => {
     >
       {/* Header */}
      <View style={{ paddingTop: 60, paddingHorizontal: 20, paddingBottom: 10 }}>
+      <TouchableOpacity
+    style={styles.homeButton}
+    onPress={() => navigation.navigate("Home")}
+  >
+    <Text style={styles.homeButtonText}>← Accueil</Text>
+  </TouchableOpacity>
         <Text style={[styles.headerTitle, { color: isDarkMode ? '#fff' : '#1a1a1a' }]}>Explorer Paris</Text>
         <Text style={[styles.headerSubtitle, { color: isDarkMode ? '#aaa' : '#666' }]}>
           {filteredLieux.length} lieux culturels à découvrir

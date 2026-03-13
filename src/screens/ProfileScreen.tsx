@@ -1,6 +1,6 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as ImagePicker from "expo-image-picker";
-import React, { useEffect, useRef, useState, useContext } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import {
   Alert,
   Animated,
@@ -136,14 +136,7 @@ export default function ProfileScreen() {
         </Text>
       </TouchableOpacity>
 
-      <TouchableOpacity 
-        style={[styles.button, styles.themeButton]} 
-        onPress={toggleTheme}
-      >
-        <Text style={styles.buttonText}>
-          {isDarkMode ? 'Passer en mode clair ☀️' : 'Passer en mode sombre 🌙'}
-        </Text>
-      </TouchableOpacity>
+      
     </View>
   );
 }
