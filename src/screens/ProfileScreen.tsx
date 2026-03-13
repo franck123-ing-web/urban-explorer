@@ -1,6 +1,6 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as ImagePicker from "expo-image-picker";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState, useContext } from "react";
 import {
   Alert,
   Animated,
@@ -10,12 +10,14 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
+import { ThemeContext } from "../contexts/ThemeContext";
 
 const DEFAULT_AVATAR =
   "https://via.placeholder.com/300x300.png?text=Avatar";
 
 export default function ProfileScreen() {
   const [imageUri, setImageUri] = useState<string | null>(null);
+  const { isDarkMode, toggleTheme } = useContext(ThemeContext);
 
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const scaleAnim = useRef(new Animated.Value(0.8)).current;
@@ -90,10 +92,19 @@ export default function ProfileScreen() {
   };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Mon Profil</Text>
+    <View style={[
+      styles.container,
+      { backgroundColor: isDarkMode ? '#1a1a1a' : '#fff' }
+    ]}>
+      <Text style={[
+        styles.title,
+        { color: isDarkMode ? '#fff' : '#1a1a1a' }
+      ]}>Mon Profil</Text>
 
-      <Text style={styles.subtitle}>
+      <Text style={[
+        styles.subtitle,
+        { color: isDarkMode ? '#aaa' : '#666' }
+      ]}>
         Prenez un selfie souvenir de votre visite
       </Text>
 
@@ -116,9 +127,21 @@ export default function ProfileScreen() {
         </TouchableOpacity>
       </Animated.View>
 
-      <TouchableOpacity style={styles.button} onPress={takePhoto}>
+      <TouchableOpacity 
+        style={[styles.button, { backgroundColor: isDarkMode ? '#333' : '#111827' }]} 
+        onPress={takePhoto}
+      >
         <Text style={styles.buttonText}>
           {imageUri ? "Changer la photo" : "Prendre une photo"}
+        </Text>
+      </TouchableOpacity>
+
+      <TouchableOpacity 
+        style={[styles.button, styles.themeButton]} 
+        onPress={toggleTheme}
+      >
+        <Text style={styles.buttonText}>
+          {isDarkMode ? 'Passer en mode clair ☀️' : 'Passer en mode sombre 🌙'}
         </Text>
       </TouchableOpacity>
     </View>
@@ -128,7 +151,6 @@ export default function ProfileScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#f5f7f6",
     alignItems: "center",
     justifyContent: "center",
     paddingHorizontal: 24,
@@ -189,15 +211,19 @@ const styles = StyleSheet.create({
   },
 
   button: {
-    backgroundColor: "#22c55e",
     paddingVertical: 14,
     paddingHorizontal: 28,
     borderRadius: 12,
+    marginBottom: 16,
 
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.1,
+    shadowOpacity: 0.2,
     shadowRadius: 5,
+  },
+
+  themeButton: {
+    backgroundColor: "#007AFF",
   },
 
   buttonText: {

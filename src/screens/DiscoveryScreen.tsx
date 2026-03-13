@@ -1,6 +1,6 @@
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState, useContext } from "react";
 
 import {
   ActivityIndicator,
@@ -15,10 +15,12 @@ import {
 
 import LieuCard from "../components/LieuCard";
 import { APIRecord, CoordonneesGeo, Lieu } from "../types/lieu";
+import { ThemeContext } from "../contexts/ThemeContext";
 
 const DiscoveryScreen: React.FC = () => {
 
   const navigation = useNavigation<NativeStackNavigationProp<any>>();
+  const { isDarkMode, toggleTheme } = useContext(ThemeContext);
 
   const [lieux, setLieux] = useState<Lieu[]>([]);
   const [filteredLieux, setFilteredLieux] = useState<Lieu[]>([]);
@@ -156,42 +158,55 @@ const DiscoveryScreen: React.FC = () => {
     <Animated.View
       style={[
         styles.container,
-        { opacity: fadeAnim, transform: [{ translateY: translateAnim }] },
+        { 
+          opacity: fadeAnim, 
+          transform: [{ translateY: translateAnim }],
+          backgroundColor: isDarkMode ? '#1a1a1a' : '#f5f5f5'
+        },
       ]}
     >
       {/* Header */}
-     <View style={styles.header}>
+     <View style={{ paddingTop: 60, paddingHorizontal: 20, paddingBottom: 10 }}>
+        <Text style={[styles.headerTitle, { color: isDarkMode ? '#fff' : '#1a1a1a' }]}>Explorer Paris</Text>
+        <Text style={[styles.headerSubtitle, { color: isDarkMode ? '#aaa' : '#666' }]}>
+          {filteredLieux.length} lieux culturels à découvrir
+        </Text>
+      </View>
 
-  <TouchableOpacity
-    style={styles.homeButton}
-    onPress={() => navigation.navigate("Home")}
-  >
-    <Text style={styles.homeButtonText}>← Accueil</Text>
-  </TouchableOpacity>
-
-  <Text style={styles.headerTitle}>Explorer Paris</Text>
-
-  <Text style={styles.headerSubtitle}>
-    {filteredLieux.length} lieux culturels à découvrir
-  </Text>
-
-</View>
+      {/* Theme Toggle Button - Top Right Corner */}
+      <TouchableOpacity 
+        style={{
+          position: 'absolute',
+          top: 50,
+          right: 20,
+          paddingVertical: 8,
+          paddingHorizontal: 12,
+          borderRadius: 20,
+          backgroundColor: isDarkMode ? '#333' : '#e0e0e0',
+          zIndex: 10,
+        }}
+        onPress={toggleTheme}
+      >
+        <Text style={{ fontSize: 20 }}>
+          {isDarkMode ? '☀️' : '🌙'}
+        </Text>
+      </TouchableOpacity>
 
       {/* Search Bar */}
-      <View style={styles.searchContainer}>
+      <View style={[styles.searchContainer, { backgroundColor: isDarkMode ? '#2a2a2a' : '#fff' }]}>
         <Text style={styles.searchIcon}>🔍</Text>
 
         <TextInput
-          style={styles.searchInput}
+          style={[styles.searchInput, { color: isDarkMode ? '#fff' : '#1a1a1a' }]}
           placeholder="Rechercher un lieu culturel..."
-          placeholderTextColor="#999"
+          placeholderTextColor={isDarkMode ? '#666' : '#999'}
           value={searchQuery}
           onChangeText={handleSearch}
         />
 
         {searchQuery.length > 0 && (
           <TouchableOpacity onPress={clearSearch}>
-            <Text style={styles.clearButtonText}>✕</Text>
+            <Text style={[styles.clearButtonText, { color: isDarkMode ? '#aaa' : '#666' }]}>✕</Text>
           </TouchableOpacity>
         )}
       </View>
@@ -216,7 +231,6 @@ const DiscoveryScreen: React.FC = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#f5f5f5",
   },
 homeButton: {
   alignSelf: "flex-start",
@@ -247,13 +261,26 @@ homeButtonText: {
   headerTitle: {
     fontSize: 32,
     fontWeight: "800",
-    color: "#111",
   },
 
   headerSubtitle: {
     fontSize: 15,
-    color: "#666",
     marginTop: 4,
+  },
+
+  themeToggleButton: {
+    paddingVertical: 8,
+    paddingHorizontal: 12,
+    borderRadius: 20,
+    minWidth: 44,
+    minHeight: 44,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginLeft: 8,
+  },
+
+  themeToggleText: {
+    fontSize: 20,
   },
 
   searchContainer: {
