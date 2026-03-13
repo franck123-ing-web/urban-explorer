@@ -1,7 +1,8 @@
-import React, { useState } from "react"
-import { StyleSheet, Text, View } from "react-native"
-import { Calendar } from "react-native-calendars"
-import { Lieu } from "../types/lieu"
+import React, { useState } from "react";
+import { Animated, StyleSheet, Text, View } from "react-native";
+import { Calendar } from "react-native-calendars";
+import { Lieu } from "../types/lieu";
+const fadeAnim = React.useRef(new Animated.Value(0)).current;
 
 type Props = {
   route: {
@@ -19,15 +20,15 @@ export default function DetailScreen({ route }: Props) {
     <View style={styles.container}>
       <Text style={styles.title}>{lieu.nom_usuel}</Text>
 
-      <Calendar
-        onDayPress={(day) => setSelectedDate(day.dateString)}
-        markedDates={{
-          [selectedDate || ""]: {
-            selected: true,
-            selectedColor: "blue",
-          },
-        }}
-      />
+     <Calendar
+  onDayPress={(day) => setSelectedDate(day.dateString)}
+  markedDates={{
+    [selectedDate || ""]: {
+      selected: true,
+      selectedColor: "#28a745", // vert
+    },
+  }}
+/>
 
       {selectedDate && (
         <Text style={styles.message}>
@@ -36,6 +37,7 @@ export default function DetailScreen({ route }: Props) {
       )}
     </View>
   )
+  
 }
 
 const styles = StyleSheet.create({

@@ -1,49 +1,42 @@
-import React from "react";
-import { View, Text, Image, TouchableOpacity, StyleSheet } from "react-native";
+import { useNavigation } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import React from 'react';
+import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Lieu } from '../types/lieu';
+import { DiscoveryStackParamList } from '../types/Navigation';
 
 interface LieuCardProps {
-  nom: string;
-  adresse?: string;
-  lat?: number;
-  lon?: number;
-  image?: string;
+  lieu: Lieu;
 }
 
-const DEFAULT_IMAGE = "https://picsum.photos/200/200";
+const DEFAULT_IMAGE = "https://picsum.photos/400/300";
 
-const LieuCard: React.FC<LieuCardProps> = ({ nom, adresse, lat, lon, image }) => {
-  const [imageUri, setImageUri] = React.useState(image || DEFAULT_IMAGE);
-  const [imageError, setImageError] = React.useState(false);
+const LieuCard: React.FC<LieuCardProps> = ({ lieu }) => {
+  const navigation = useNavigation<NativeStackNavigationProp<DiscoveryStackParamList, 'ListeLieux'>>();
 
-  React.useEffect(() => {
-    if (image) {
-      setImageUri(image);
-      setImageError(false);
-    } else {
-      setImageUri(DEFAULT_IMAGE);
-      setImageError(true);
-    }
-  }, [image]);
+  const [imageUri, setImageUri] = React.useState(lieu.image || DEFAULT_IMAGE);
 
   return (
     <View style={styles.card}>
-      {/* Image from API or default placeholder */}
       <Image
-        source={{ uri: imageError ? DEFAULT_IMAGE : imageUri }}
+        source={{ uri: imageUri }}
         style={styles.image}
         resizeMode="cover"
-        onError={() => {
-          console.log("Image failed to load:", imageUri);
-          setImageUri(DEFAULT_IMAGE);
-          setImageError(true);
-        }}
+        onError={() => setImageUri(DEFAULT_IMAGE)}
       />
-      <View style={styles.textContainer}>
-        <Text style={styles.title} numberOfLines={2}>{nom}</Text>
-        <Text style={styles.address} numberOfLines={2}>{adresse || 'Adresse non disponible'}</Text>
-        <TouchableOpacity 
+
+      <View style={styles.content}>
+        <Text style={styles.title} numberOfLines={2}>
+          {lieu.nom_usuel}
+        </Text>
+
+        <Text style={styles.address} numberOfLines={2}>
+          {lieu.adresse || "Adresse non disponible"}
+        </Text>
+
+        <TouchableOpacity
           style={styles.button}
-          onPress={() => alert(`Latitude: ${lat}, Longitude: ${lon}`)}
+          onPress={() => navigation.navigate('DetailLieu', { lieu })}
         >
           <Text style={styles.buttonText}>Voir plus</Text>
         </TouchableOpacity>
@@ -52,53 +45,15 @@ const LieuCard: React.FC<LieuCardProps> = ({ nom, adresse, lat, lon, image }) =>
   );
 };
 
+
 const styles = StyleSheet.create({
-  card: {
-    flexDirection: "row",
-    marginVertical: 10,
-    marginHorizontal: 16,
-    padding: 0,
-    backgroundColor: "#fff",
-    borderRadius: 16,
-    elevation: 4,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    overflow: "hidden",
-  },
-  image: {
-    width: 120,
-    height: 120,
-  },
-  textContainer: {
-    flex: 1,
-    padding: 12,
-    justifyContent: "space-between",
-  },
-  title: { 
-    fontWeight: "bold", 
-    fontSize: 16,
-    color: "#1a1a1a",
-    marginBottom: 4,
-  },
-  address: { 
-    color: "#666",
-    fontSize: 13,
-    marginBottom: 12,
-  },
-  button: {
-    backgroundColor: "#007AFF",
-    paddingVertical: 8,
-    paddingHorizontal: 16,
-    borderRadius: 8,
-    alignSelf: 'flex-start',
-  },
-  buttonText: {
-    color: "#fff",
-    fontWeight: "600",
-    fontSize: 14,
-  },
+  card: { /* ton style actuel */ },
+  image: { width: '100%', height: 200 },
+  content: { padding: 16 },
+  title: { fontSize: 18, fontWeight: '700', marginBottom: 6 },
+  address: { fontSize: 14, color: '#777', marginBottom: 14 },
+  button: { backgroundColor: '#28a745', paddingVertical: 10, paddingHorizontal: 18, borderRadius: 10, alignSelf: 'flex-start' },
+  buttonText: { color: '#fff', fontWeight: '600', fontSize: 14 },
 });
 
 export default LieuCard;
