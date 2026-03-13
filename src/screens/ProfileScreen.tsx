@@ -1,6 +1,6 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as ImagePicker from "expo-image-picker";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import {
   Alert,
   Animated,
@@ -11,12 +11,14 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
+import { ThemeContext } from "../contexts/ThemeContext";
 
 const DEFAULT_AVATAR =
   "https://via.placeholder.com/300x300.png?text=Avatar";
 
 export default function ProfileScreen() {
   const [imageUri, setImageUri] = useState<string | null>(null);
+  const { isDarkMode } = useContext(ThemeContext);
 
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const scaleAnim = useRef(new Animated.Value(0.8)).current;
@@ -101,10 +103,27 @@ export default function ProfileScreen() {
   };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Mon Profil</Text>
+    <View
+      style={[
+        styles.container,
+        { backgroundColor: isDarkMode ? "#1a1a1a" : "#f5f7f6" },
+      ]}
+    >
+      <Text
+        style={[
+          styles.title,
+          { color: isDarkMode ? "#fff" : "#1a1a1a" },
+        ]}
+      >
+        Mon Profil
+      </Text>
 
-      <Text style={styles.subtitle}>
+      <Text
+        style={[
+          styles.subtitle,
+          { color: isDarkMode ? "#aaa" : "#666" },
+        ]}
+      >
         Ajoutez ou modifiez votre photo de profil
       </Text>
 
@@ -127,7 +146,13 @@ export default function ProfileScreen() {
         </TouchableOpacity>
       </Animated.View>
 
-      <TouchableOpacity style={styles.button} onPress={takePhoto}>
+      <TouchableOpacity
+        style={[
+          styles.button,
+          { backgroundColor: isDarkMode ? "#333" : "#22c55e" },
+        ]}
+        onPress={takePhoto}
+      >
         <Text style={styles.buttonText}>
           {imageUri ? "Changer la photo" : "Prendre une photo"}
         </Text>
@@ -139,7 +164,6 @@ export default function ProfileScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#f5f7f6",
     alignItems: "center",
     justifyContent: "center",
     paddingHorizontal: 24,
@@ -148,13 +172,11 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 32,
     fontWeight: "800",
-    color: "#1a1a1a",
     marginBottom: 6,
   },
 
   subtitle: {
     fontSize: 15,
-    color: "#666",
     textAlign: "center",
     marginBottom: 30,
   },
@@ -190,10 +212,14 @@ const styles = StyleSheet.create({
   },
 
   button: {
-    backgroundColor: "#22c55e",
     paddingVertical: 14,
     paddingHorizontal: 28,
     borderRadius: 12,
+    marginBottom: 16,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.2,
+    shadowRadius: 5,
   },
 
   buttonText: {
