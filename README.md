@@ -1,4 +1,9 @@
 # Urban Explorer – Application Mobile City Guide
+installer Expo Go
+puis scanner : 
+
+![Aperçu du projet](QR.png)
+
 ## Membres de l’équipe
 
 Rizlène BERRAG
@@ -260,9 +265,6 @@ amélioration de l’ergonomie de l’application
 
 
 ## 8. Installation et Lancement du Projet
-Cloner le projet
-
-git clone https://github.com/RizleneBERRAG/urban-explorer.git
 
 Installer les dépendances
 
