@@ -4,7 +4,7 @@ installer Expo Go
 puis scanner : 
 
 
-![QR Code](assets/images/QR.png)
+(assets/images/QR.png)
 
 
 
