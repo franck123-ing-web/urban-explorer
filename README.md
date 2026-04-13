@@ -2,7 +2,10 @@
 installer Expo Go
 puis scanner : 
 
-![QR Code](assets/images/QR.png)
+
+<p align="center">
+  <img src="assets/images/QR.png" width="200"/>
+</p>
 
 ## Membres de l’équipe
 
