@@ -5,7 +5,7 @@ puis scanner :
 
 ![test](./assets/images/QR.png)
 
-
+ou lancer l'application avec: expo start et appuyer sur la touche W pour la lancer en web
 
 ## Membres de l’équipe
 
