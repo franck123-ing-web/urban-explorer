@@ -1,11 +1,12 @@
 # Urban Explorer – Application Mobile City Guide
 installer Expo Go
+
 puis scanner : 
 
 
-<p align="center">
-  <img src="assets/images/QR.png" width="200"/>
-</p>
+![QR Code](assets/images/QR.png)
+
+
 
 ## Membres de l’équipe
 
