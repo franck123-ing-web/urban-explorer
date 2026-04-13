@@ -2,7 +2,7 @@
 installer Expo Go
 puis scanner : 
 
-(QR.png)
+!(QR.png)
 
 ## Membres de l’équipe
 
