@@ -2,11 +2,7 @@
 installer Expo Go
 puis scanner : 
 
-<h1 align="center">Urban Explorer</h1>
-
-<p align="center">
-  <img src="QR.png" width="600"/>
-</p>
+![QR Code](assets/images/QR.png)
 
 ## Membres de l’équipe
 
