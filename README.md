@@ -1,7 +1,11 @@
 # Urban Explorer – Application Mobile City Guide
 installer Expo Go
 
-lancer l'application avec : npx expo start --tunnel et appuyer sur la touche W pour la lancer en web
+lancer l'application avec : npx expo start --tunnel et appuyer sur la touche W pour la lancer en web ou scanner le QR code pour l'ouvrir en mobile 
+
+<p align="center">
+  <img src="assets/images/QR.png" width="500">
+</p>
 
 ## Membres de l’équipe
 
