@@ -1,4 +1,10 @@
 # Urban Explorer – Application Mobile City Guide
+installer Expo Go
+
+lancer l'application avec : npx expo start --tunnel et appuyer sur la touche W pour la lancer en web ou scanner le QR code pour l'ouvrir en mobile 
+
+![QR Code](assets/images/QR.png)
+
 ## Membres de l’équipe
 
 Rizlène BERRAG
@@ -260,9 +266,6 @@ amélioration de l’ergonomie de l’application
 
 
 ## 8. Installation et Lancement du Projet
-Cloner le projet
-
-git clone https://github.com/RizleneBERRAG/urban-explorer.git
 
 Installer les dépendances
 
